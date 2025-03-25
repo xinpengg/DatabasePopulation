@@ -1,0 +1,140 @@
+Department:Biology
+Anatomy
+AP Biology
+AP Environmental
+AP Psychology
+Bioorganic Chemistry
+Genetics
+Introduction to Neuroscience
+Regents Living Environment Lab
+Environmental Sustainability
+Department:Chemical
+Regents Chemistry
+AP Chemistry
+Chemical Engineering
+Organic Chemistry
+MICA
+Quantitative Analysis
+Forensics
+Department:Physics
+Regents Physics
+Regents Physics Labs
+AP Physics 1
+AP Physics 2
+AP Physics C (Mechanics)
+AP Physics C (E/M)
+Astronomy
+Modern Physics
+
+
+Department: Mathematics
+Regents Algebra
+Regents Geometry
+Regents Algebra II
+Pre-Calculus
+Calculus
+AP Calculus (AB)
+AP Calculus (BC)
+AP Statistics
+Multivariable Calculus
+Math Research
+Linear Algebra
+
+Department:CTE, Computer Science & Engineering
+
+AP Computer Science Principles (10th Grade)
+AP Computer Science A
+Big Data: Warehousing & Analytics
+Computer Science & Engineering Home
+Cyber Security
+Digital Electronics (Project Lead the Way)
+Digital Systems Design
+Electrical Engineering Major
+Fundamentals of IT Infrastructure
+Green Building Construction
+PLTW EDD
+Software Engineering Major
+Staff List
+Statics
+Strength of Materials
+Web Development
+
+Department:Health & PE
+
+Physical Education
+Health Education
+
+
+
+
+
+
+Department:English
+9th Grade English
+10th Grade English
+10th Grade: AP Capstone Seminar
+11th Grade English
+11th Grade: AP English Language & Composition
+12th Grade: AP Capstone Research
+12th Grade: AP English Literature & Composition
+12th Grade: Creative Writing
+12th Grade: Drama
+12th Grade: Film & Literature
+12th Grade: Journalism
+12th Grade: Life, Love & Death
+12th Grade: Mystery, Horror & the Supernatural
+12th Grade: Science Fiction & Fantasy
+12th Grade: Yearbook
+Elective: The Survey (Tech's Student Newspaper)
+
+Department:SOCIAL STUDIES
+
+9th Grade Global
+10th Grade Regents Global History
+AP World History
+AP European History
+11th Grade Regents American History
+AP American History
+Participation in Government
+AP US Government
+Economics
+AP Macroeconomics
+AP Microeconomics
+AP Comparative Goverment
+AP Psychology
+AP Human Geography
+Sociology
+Cultural Anthropology
+Physical Anthropology
+
+
+Department:World Languages & ENL
+
+WORLD LANGUAGES DEPARTMENT CLASS CONTRACT
+Chinese
+AP Chinese Language and Culture
+French
+AP French Language and Culture
+German
+AP German Language and Culture
+Italian
+AP Italian Language and Culture
+Regents Spanish
+Spanish IV
+AP Spanish Language and Culture
+AP Spanish Literature and Culture
+
+Department:Visual & Preforming Art
+Architecture
+Adobe Digital Video
+Adobe Visual Design
+Architectural Drawing w/CAD
+Digital Animation
+Industrial Design
+Media
+Music
+PLTW CEA
+PLTW DDP (9th Grade)
+Video & Audio
+
+Department:Paraphernalia
