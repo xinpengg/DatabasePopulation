@@ -25,8 +25,6 @@ AP Physics C (Mechanics)
 AP Physics C (E/M)
 Astronomy
 Modern Physics
-
-
 Department: Mathematics
 Regents Algebra
 Regents Geometry
@@ -39,9 +37,7 @@ AP Statistics
 Multivariable Calculus
 Math Research
 Linear Algebra
-
 Department:CTE, Computer Science & Engineering
-
 AP Computer Science Principles (10th Grade)
 AP Computer Science A
 Big Data: Warehousing & Analytics
@@ -58,17 +54,9 @@ Staff List
 Statics
 Strength of Materials
 Web Development
-
 Department:Health & PE
-
 Physical Education
 Health Education
-
-
-
-
-
-
 Department:English
 9th Grade English
 10th Grade English
@@ -85,10 +73,8 @@ Department:English
 12th Grade: Mystery, Horror & the Supernatural
 12th Grade: Science Fiction & Fantasy
 12th Grade: Yearbook
-Elective: The Survey (Tech's Student Newspaper)
-
+The Survey (Tech's Student Newspaper)
 Department:SOCIAL STUDIES
-
 9th Grade Global
 10th Grade Regents Global History
 AP World History
@@ -106,11 +92,7 @@ AP Human Geography
 Sociology
 Cultural Anthropology
 Physical Anthropology
-
-
 Department:World Languages & ENL
-
-WORLD LANGUAGES DEPARTMENT CLASS CONTRACT
 Chinese
 AP Chinese Language and Culture
 French
@@ -123,7 +105,6 @@ Regents Spanish
 Spanish IV
 AP Spanish Language and Culture
 AP Spanish Literature and Culture
-
 Department:Visual & Preforming Art
 Architecture
 Adobe Digital Video
@@ -136,5 +117,4 @@ Music
 PLTW CEA
 PLTW DDP (9th Grade)
 Video & Audio
-
 Department:Paraphernalia

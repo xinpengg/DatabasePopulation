@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 def parse_departments_from_file(file_path):
     departments = {}
     current_department = None
@@ -14,7 +16,7 @@ def parse_departments_from_file(file_path):
     return departments
 
 
-file_path = 'C:\\Users\\BT_4N2_02\\PycharmProjects\\pythonProject\\departments.txt'
+file_path = 'departments.txt'
 departments = parse_departments_from_file(file_path)
 
 department_id = 1  # Counter for department IDs
@@ -24,7 +26,7 @@ type_id_counter = 4
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (1, 'AP');")
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');")
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');")
-
+num_courses=0
 for department, courses in departments.items():
     print(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, '{department}');")
     for course in courses:
@@ -41,6 +43,7 @@ for department, courses in departments.items():
 
         print(f"INSERT INTO Courses (department_id, course_name, type_id) "
               f"VALUES ({department_id}, '{course}', {type_id});")
+        num_courses+=1
     department_id += 1
 
 def parse_departments(file_path):
@@ -59,6 +62,7 @@ def parse_departments(file_path):
 
 def generate_sql_insert(departments):
     sql_statements = []
+    teacher_list = []  # Initialize an empty list to store teacher names
     department_id = 1  # Start department IDs from 1
     for dept_id, teachers in departments.items():
         # Insert department statement
@@ -66,12 +70,47 @@ def generate_sql_insert(departments):
         teacher_id = 1  # Reset teacher IDs for each department
         for teacher in teachers:
             sql_statements.append(f"INSERT INTO Teachers (teacher_id, name, department_id) VALUES ({teacher_id}, '{teacher}', {department_id});")
+            teacher_list.append(teacher)  # Append the teacher's name to the list
             teacher_id += 1
         department_id += 1
-    return "\n".join(sql_statements)
+    return "\n".join(sql_statements), teacher_list  # Return both the SQL statements and the teacher list
 
-# Usage example
-file_path = 'teachers.txt'  # Replace with your actual file path
+file_path = 'teachers.txt'
 departments = parse_departments(file_path)
-sql_output = generate_sql_insert(departments)
+sql_output, teacher_list = generate_sql_insert(departments)
+
 print(sql_output)
+
+print("\nList of Teachers:")
+print(teacher_list)
+
+
+for i in range(1, 5001):
+    print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
+import random
+
+floors = ['B', 1, 2, 3, 4, 5, 6, 7, 8]
+wings = ['N', 'S', 'E', 'W']
+room_numbers = range(1, 21)  # Room numbers from 1 to 20
+
+all_rooms = [f"{floor}{wing}{room_number:02}" for floor in floors for wing in wings for room_number in room_numbers]
+
+course_period_id = 1
+
+room_index = 0
+
+for course_id in range(1, num_courses + 1):
+    num_offerings = random.randint(1, 5)  # Randomly generate 1–5 offerings per course
+    offerings_count = 0  # Track the number of offerings per course
+
+    while offerings_count < num_offerings and room_index < len(all_rooms):
+        room = all_rooms[room_index]  # Get the next unique room
+        teacher_id = random.choice(teacher_list)  # Randomly assign a teacher
+        period = random.randint(1, 10)  # Randomly assign a period
+
+        print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) "
+              f"VALUES ({course_period_id}, {period}, '{room}', '{teacher_id}', {course_id});")
+
+        course_period_id += 1
+        offerings_count += 1  # Increment the count of offerings for this course
+        room_index += 1  # Move to the next room in the list
