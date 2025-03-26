@@ -83,10 +83,11 @@ print(sql_output)
 
 print("\nList of Teachers:")
 print(teacher_list)
-
+teachersize = len(teacher_list)
 
 for i in range(1, 5001):
     print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
+
 import random
 
 floors = ['B', 1, 2, 3, 4, 5, 6, 7, 8]
@@ -96,7 +97,6 @@ room_numbers = range(1, 21)  # Room numbers from 1 to 20
 all_rooms = [f"{floor}{wing}{room_number:02}" for floor in floors for wing in wings for room_number in room_numbers]
 
 course_period_id = 1
-
 room_index = 0
 
 for course_id in range(1, num_courses + 1):
@@ -105,11 +105,11 @@ for course_id in range(1, num_courses + 1):
 
     while offerings_count < num_offerings and room_index < len(all_rooms):
         room = all_rooms[room_index]  # Get the next unique room
-        teacher_id = random.choice(teacher_list)  # Randomly assign a teacher
+        teacher_index = random.randint(0, teachersize - 1)  # Generate a random index
         period = random.randint(1, 10)  # Randomly assign a period
 
         print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) "
-              f"VALUES ({course_period_id}, {period}, '{room}', '{teacher_id}', {course_id});")
+              f"VALUES ({course_period_id}, {period}, '{room}', {teacher_index}, {course_id});")
 
         course_period_id += 1
         offerings_count += 1  # Increment the count of offerings for this course
