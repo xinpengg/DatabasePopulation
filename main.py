@@ -84,7 +84,6 @@ def generate_sql_insert(departments):
    department_id = 1  # Start department IDs from 1
    for dept_id, teachers in departments.items():
        # Insert department statement
-       sql_statements.append(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, 'Department {dept_id}');")
        teacher_id = 1  # Reset teacher IDs for each department
        for teacher in teachers:
            sql_statements.append(f"INSERT INTO Teachers (teacher_id, name, department_id) VALUES ({teacher_id}, '{teacher}', {department_id});")
@@ -107,15 +106,15 @@ print(teacher_list)
 teachersize = len(teacher_list)
 
 
-for i in range(1, 5001):
-   print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
-   listOfRandCoursePeriod = []
-   for j in range(1, 11):
-       randCoursePeriod = random.randint(1, 314)
-       while randCoursePeriod in listOfRandCoursePeriod:
-           randCoursePeriod = random.randint(1, 314)
-       listOfRandCoursePeriod.append(randCoursePeriod)
-       print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
+# for i in range(1, 5001):
+#     print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
+#     listOfRandCoursePeriod = []
+#     for j in range(1, 11):
+#         randCoursePeriod = random.randint(1, 314)
+#         while randCoursePeriod in listOfRandCoursePeriod:
+#             randCoursePeriod = random.randint(1, 314)
+#         listOfRandCoursePeriod.append(randCoursePeriod)
+#         print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
 
 
 floors = ['B', 1, 2, 3, 4, 5, 6, 7, 8]
@@ -148,5 +147,4 @@ for course_id in range(1, num_courses + 1):
        course_period_id += 1
        offerings_count += 1  # Increment the count of offerings for this course
        room_index += 1  # Move to the next room in the list
-
 
