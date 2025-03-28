@@ -2,6 +2,7 @@
 import random
 
 
+# Function to parse departments from file and avoid duplicates
 def parse_departments_from_file(file_path):
    departments = {}
    current_department = None
@@ -20,8 +21,6 @@ def parse_departments_from_file(file_path):
    return departments
 
 
-
-
 file_path = 'departments.txt'
 departments = parse_departments_from_file(file_path)
 
@@ -31,29 +30,38 @@ course_type_map = {"AP": 1, "Regents": 2, "Elective": 3}
 type_id_counter = 4
 
 
+# Insert course types
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (1, 'AP');")
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');")
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');")
-num_courses=0
+num_courses = 0
+
+
+# Avoid duplicate departments
+inserted_departments = set()
+
+
 for department, courses in departments.items():
-   print(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, '{department}');")
-   for course in courses:
-       if "AP" in course:
-           type_id = course_type_map["AP"]
-       elif "Regents" in course:
-           type_id = course_type_map["Regents"]
-       else:
-           if "Elective" not in course_type_map:
-               course_type_map["Elective"] = type_id_counter
-               print(f"INSERT INTO Course_Types (type_id, type_name) VALUES ({type_id_counter}, 'Elective');")
-               type_id_counter += 1
-           type_id = course_type_map["Elective"]
+   if department not in inserted_departments:
+       print(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, '{department}');")
+       inserted_departments.add(department)
+       for course in courses:
+           if "AP" in course:
+               type_id = course_type_map["AP"]
+           elif "Regents" in course:
+               type_id = course_type_map["Regents"]
+           else:
+               if "Elective" not in course_type_map:
+                   course_type_map["Elective"] = type_id_counter
+                   print(f"INSERT INTO Course_Types (type_id, type_name) VALUES ({type_id_counter}, 'Elective');")
+                   type_id_counter += 1
+               type_id = course_type_map["Elective"]
 
 
-       print(f"INSERT INTO Courses (department_id, course_name, type_id) "
-             f"VALUES ({department_id}, '{course}', {type_id});")
-       num_courses+=1
-   department_id += 1
+           print(f"INSERT INTO Courses (department_id, course_name, type_id) "
+                 f"VALUES ({department_id}, '{course}', {type_id});")
+           num_courses += 1
+       department_id += 1
 
 
 def parse_departments(file_path):
@@ -62,7 +70,6 @@ def parse_departments(file_path):
        for line in file:
            line = line.strip()
            if line:  # Ignore empty lines
-               # Split department ID and teachers
                parts = line.split(':', 1)
                if len(parts) == 2:
                    department_id = parts[0].strip()
@@ -109,10 +116,6 @@ for i in range(1, 5001):
            randCoursePeriod = random.randint(1, 314)
        listOfRandCoursePeriod.append(randCoursePeriod)
        print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
-       #add periods
-   # print(f"INSERT INTO Student_schedule () VALUES ({randCoursePeriod}, {j});")
-
-
 
 
 floors = ['B', 1, 2, 3, 4, 5, 6, 7, 8]
@@ -145,3 +148,5 @@ for course_id in range(1, num_courses + 1):
        course_period_id += 1
        offerings_count += 1  # Increment the count of offerings for this course
        room_index += 1  # Move to the next room in the list
+
+
