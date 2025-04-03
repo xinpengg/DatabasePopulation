@@ -203,6 +203,18 @@ for student_id, course_period_list in student_courses.items():
 
 print(students_to_courses)
 print(course_assignments)
+students_to_assignments = {}
+
+# Map each student to their assignments
+for student_id, course_ids in students_to_courses.items():
+    students_to_assignments[student_id] = []  # Create an empty list for assignments
+    for course_id in course_ids:
+        if course_id in course_assignments:  # Check if the course has assignments
+            students_to_assignments[student_id].extend(course_assignments[course_id])
+
+# Print the assignments for each student
+for student_id, assignments in students_to_assignments.items():
+    print(f"Student ID: {student_id}, Assignments: {assignments}")
 
 for i in range(1, 5001):
 
