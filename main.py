@@ -138,19 +138,26 @@ departments = parse_departments(file_path)
 sql_output, teacher_list = generate_sql_insert(departments)
 teachersize = len(teacher_list)
 student_courses_periods = {}
+num_courses = 314
+
 for i in range(1, 5001):
     print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
     listOfRandCoursePeriod = []
+    enrolled_courses = set()  # To keep track of unique courses
 
-    for j in range(1, 11):
-        randCoursePeriod = random.randint(1, 314)
-        while randCoursePeriod in listOfRandCoursePeriod:
-            randCoursePeriod = random.randint(1, 314)
+    for j in range(1, 11):  # Each student gets enrolled in up to 10 unique courses
+        randCoursePeriod = random.randint(1, num_courses)  # Random course_period_id
+
+        # Ensure course_period_id maps to a unique course for the student
+        while randCoursePeriod in listOfRandCoursePeriod or randCoursePeriod % num_courses in enrolled_courses:
+            randCoursePeriod = random.randint(1, num_courses)
 
         listOfRandCoursePeriod.append(randCoursePeriod)
+        enrolled_courses.add(randCoursePeriod % num_courses)  # Track the base course ID
+
         print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
+
     student_courses_periods[i] = listOfRandCoursePeriod
-student_courses_periods = {}
 
 for i in range(1, 5001):
     print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
@@ -174,7 +181,6 @@ room_numbers = range(1, 21)  # Room numbers from 1 to 20
 all_rooms = [f"{floor}{wing}{room_number:02}" for floor in floors for wing in wings for room_number in room_numbers]
 
 # Generate course periods using the method
-num_courses = 314  # Example number of courses
 teachersize = 50  # Example number of teachers
 course_to_course_periods = generate_course_periods(num_courses, all_rooms, teachersize)
 
