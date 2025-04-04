@@ -17,77 +17,6 @@ def parse_departments_from_file(file_path):
                 departments[current_department].append(line)
 
     return departments
-
-
-file_path = 'departments.txt'
-departments = parse_departments_from_file(file_path)
-
-department_id = 1  # Counter for department IDs
-course_type_map = {"AP": 1, "Regents": 2, "Elective": 3}
-type_id_counter = 4
-
-# Insert course types
-print("INSERT INTO Course_Types (type_id, type_name) VALUES (1, 'AP');")
-print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');")
-print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');")
-num_courses = 0
-
-# Avoid duplicate departments
-inserted_departments = set()
-print(f"INSERT INTO Assignment_Type (assignment_type_name) VALUES ('Minor');")
-print(f"INSERT INTO Assignment_Type (assignment_type_name) VALUES ('Major');")
-assignment_id = 1  # Start with the first assignment ID
-course_assignments = {}
-
-# Loop through the courses in the department
-for department, courses in departments.items():
-    if department not in inserted_departments:
-        print(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, '{department}');")
-        inserted_departments.add(department)
-        for course in courses:
-            # Determine the course type
-            if "AP" in course:
-                type_id = course_type_map["AP"]
-            elif "Regents" in course:
-                type_id = course_type_map["Regents"]
-            else:
-                if "Elective" not in course_type_map:
-                    course_type_map["Elective"] = type_id_counter
-                    print(f"INSERT INTO Course_Types (type_id, type_name) VALUES ({type_id_counter}, 'Elective');")
-                    type_id_counter += 1
-                type_id = course_type_map["Elective"]
-
-            print(f"INSERT INTO Courses (department_id, course_name, type_id) "
-                  f"VALUES ({department_id}, '{course}', {type_id});")
-
-            # Increment course counter
-            course_id = num_courses  # Unique course identifier
-
-            # Generate assignments
-            num_minor_assignments = 12
-            num_major_assignments = 3
-
-            # Add course_id to course_assignments if not already present
-            if course_id not in course_assignments:
-                course_assignments[course_id] = []
-
-            # Generate Minor Assignments
-            for i in range(1, num_minor_assignments + 1):
-                print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) "
-                      f"VALUES ({assignment_id}, 'Minor Assignment {assignment_id}', 0, {num_courses});")
-                course_assignments[course_id].append(assignment_id)
-                assignment_id += 1  # Increment assignment_id
-
-            # Generate Major Assignments
-            for i in range(1, num_major_assignments + 1):
-                print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) "
-                      f"VALUES ({assignment_id}, 'Major Assignment {assignment_id - num_minor_assignments}', 1, {num_courses});")
-                course_assignments[course_id].append(assignment_id)
-                assignment_id += 1  # Increment assignment_id
-
-            num_courses += 1  # Increment the course counter
-        department_id += 1
-
 def parse_departments(file_path):
     departments = {}
     with open(file_path, 'r') as file:
@@ -113,95 +42,167 @@ def generate_sql_insert(departments):
             teacher_list.append(teacher)  # Append the teacher's name to the list
             teacher_id += 1
         department_id += 1
-    return "\n".join(sql_statements), teacher_list  # Return both the SQL statements and the teacher list
+    return "\n".join(sql_statements), teacher_list
+
+def generate_course_periods(num_courses, all_rooms, teachersize):
+    course_to_course_periods = {}
+    course_period_id = 1
+    room_index = 0
+
+    for course_id in range(1, num_courses + 1):
+        num_offerings = random.randint(1, 5)  # Randomly generate 1–5 offerings per course
+        offerings_count = 0  # Track the number of offerings per course
+
+        # Create an entry in the dictionary for this course_id if it doesn't exist
+        if course_id not in course_to_course_periods:
+            course_to_course_periods[course_id] = []
+
+        while offerings_count < num_offerings and room_index < len(all_rooms):
+            room = all_rooms[room_index]  # Get the next unique room
+            teacher_index = random.randint(0, teachersize - 1)  # Generate a random index
+            period = random.randint(1, 10)  # Randomly assign a period
+
+            # Print SQL statement
+            print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) "
+                  f"VALUES ({course_period_id}, {period}, '{room}', {teacher_index}, {course_id});")
+
+            # Append the course_period_id to the list for this course_id
+            course_to_course_periods[course_id].append(course_period_id)
+
+            course_period_id += 1
+            offerings_count += 1  # Increment the count of offerings for this course
+            room_index += 1
+
+    return course_to_course_periods
+
+
+file_path = 'departments.txt'
+departments = parse_departments_from_file(file_path)
+
+department_id = 1  # Counter for department IDs
+course_type_map = {"AP": 1, "Regents": 2, "Elective": 3}
+type_id_counter = 4
+
+print("INSERT INTO Course_Types (type_id, type_name) VALUES (1, 'AP');")
+print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');")
+print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');")
+num_courses = 0
+
+inserted_departments = set()
+print(f"INSERT INTO Assignment_Type (assignment_type_name) VALUES ('Minor');")
+print(f"INSERT INTO Assignment_Type (assignment_type_name) VALUES ('Major');")
+assignment_id = 1
+course_assignments = {}
+for department, courses in departments.items():
+    if department not in inserted_departments:
+        print(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, '{department}');")
+        inserted_departments.add(department)
+        for course in courses:
+            # Determine the course type
+            if "AP" in course:
+                type_id = course_type_map["AP"]
+            elif "Regents" in course:
+                type_id = course_type_map["Regents"]
+            else:
+                if "Elective" not in course_type_map:
+                    course_type_map["Elective"] = type_id_counter
+                    print(f"INSERT INTO Course_Types (type_id, type_name) VALUES ({type_id_counter}, 'Elective');")
+                    type_id_counter += 1
+                type_id = course_type_map["Elective"]
+
+            print(f"INSERT INTO Courses (department_id, course_name, type_id) "
+                  f"VALUES ({department_id}, '{course}', {type_id});")
+            course_id = num_courses
+            num_minor_assignments = 12
+            num_major_assignments = 3
+            if course_id not in course_assignments:
+                course_assignments[course_id] = []
+            for i in range(1, num_minor_assignments + 1):
+                print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) "
+                      f"VALUES ({assignment_id}, 'Minor Assignment {assignment_id}', 0, {num_courses});")
+                course_assignments[course_id].append(assignment_id)
+                assignment_id += 1
+            for i in range(1, num_major_assignments + 1):
+                print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) "
+                      f"VALUES ({assignment_id}, 'Major Assignment {assignment_id - num_minor_assignments}', 1, {num_courses});")
+                course_assignments[course_id].append(assignment_id)
+                assignment_id += 1  # Increment assignment_id
+
+            num_courses += 1
+        department_id += 1
+
+
 
 file_path = 'teachers.txt'
 departments = parse_departments(file_path)
 sql_output, teacher_list = generate_sql_insert(departments)
-
-print(sql_output)
-
-print("\nList of Teachers:")
-print(teacher_list)
 teachersize = len(teacher_list)
-import random
-
-# Dictionary to keep track of course_period_id for each student
-student_courses = {}
-
-# Loop for creating Students and their associated course periods
+student_courses_periods = {}
 for i in range(1, 5001):
     print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
-
-    # Initialize an empty list to track unique course_period_id for the student
     listOfRandCoursePeriod = []
 
     for j in range(1, 11):
         randCoursePeriod = random.randint(1, 314)
-
-        # Ensure no duplicate course_period_id for the same student
         while randCoursePeriod in listOfRandCoursePeriod:
             randCoursePeriod = random.randint(1, 314)
 
         listOfRandCoursePeriod.append(randCoursePeriod)
         print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
+    student_courses_periods[i] = listOfRandCoursePeriod
+student_courses_periods = {}
 
-    # Add the student's course periods to the dictionary
-    student_courses[i] = listOfRandCoursePeriod
+for i in range(1, 5001):
+    print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
+    listOfRandCoursePeriod = []
 
-print(student_courses)
+    for j in range(1, 11):
+        randCoursePeriod = random.randint(1, 314)
+        while randCoursePeriod in listOfRandCoursePeriod:
+            randCoursePeriod = random.randint(1, 314)
+
+        listOfRandCoursePeriod.append(randCoursePeriod)
+        print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
+    student_courses_periods[i] = listOfRandCoursePeriod
+
+# Map students to courses
+students_to_courses = {}
 floors = ['B', 1, 2, 3, 4, 5, 6, 7, 8]
 wings = ['N', 'S', 'E', 'W']
 room_numbers = range(1, 21)  # Room numbers from 1 to 20
 
 all_rooms = [f"{floor}{wing}{room_number:02}" for floor in floors for wing in wings for room_number in room_numbers]
 
-course_period_id = 1
-room_index = 0
+# Generate course periods using the method
+num_courses = 314  # Example number of courses
+teachersize = 50  # Example number of teachers
+course_to_course_periods = generate_course_periods(num_courses, all_rooms, teachersize)
 
-# Initialize the dictionary to map course_id to its associated course_period_id(s)
-course_to_course_periods = {}
+# Generate students and their course periods
+student_courses_periods = {}
 
-course_period_id = 1
-room_index = 0
+for i in range(1, 5001):
+    print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
+    listOfRandCoursePeriod = []
 
-for course_id in range(1, num_courses + 1):
-    num_offerings = random.randint(1, 5)  # Randomly generate 1–5 offerings per course
-    offerings_count = 0  # Track the number of offerings per course
+    for j in range(1, 11):
+        randCoursePeriod = random.randint(1, 314)
+        while randCoursePeriod in listOfRandCoursePeriod:
+            randCoursePeriod = random.randint(1, 314)
 
-    # Create an entry in the dictionary for this course_id if it doesn't exist
-    if course_id not in course_to_course_periods:
-        course_to_course_periods[course_id] = []
+        listOfRandCoursePeriod.append(randCoursePeriod)
+        print(f"INSERT INTO Roster (course_period_id, student_id) VALUES ({randCoursePeriod}, {i});")
+    student_courses_periods[i] = listOfRandCoursePeriod
 
-    while offerings_count < num_offerings and room_index < len(all_rooms):
-        room = all_rooms[room_index]  # Get the next unique room
-        teacher_index = random.randint(0, teachersize - 1)  # Generate a random index
-        period = random.randint(1, 10)  # Randomly assign a period
-
-        # Print SQL statement
-        print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) "
-              f"VALUES ({course_period_id}, {period}, '{room}', {teacher_index}, {course_id});")
-
-        # Append the course_period_id to the list for this course_id
-        course_to_course_periods[course_id].append(course_period_id)
-
-        course_period_id += 1
-        offerings_count += 1  # Increment the count of offerings for this course
-        room_index += 1
-
-print(course_to_course_periods)
-
+# Map students to courses
 students_to_courses = {}
 
-for student_id, course_period_list in student_courses.items():
+for student_id, course_period_list in student_courses_periods.items():
     students_to_courses[student_id] = []
 
     for course_id, course_period_ids in course_to_course_periods.items():
         if any(course_period_id in course_period_list for course_period_id in course_period_ids):
             students_to_courses[student_id].append(course_id)
-
-
-print(students_to_courses)
 print(course_assignments)
 students_to_assignments = {}
 
@@ -215,6 +216,12 @@ for student_id, course_ids in students_to_courses.items():
 # Print the assignments for each student
 for student_id, assignments in students_to_assignments.items():
     print(f"Student ID: {student_id}, Assignments: {assignments}")
+
+for student_id, courses in students_to_courses.items():
+    if ((len(set(courses))) == 7):
+        print(str(student_id) + " " + str(courses))
+
+
 
 for i in range(1, 5001):
 
