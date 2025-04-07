@@ -87,7 +87,6 @@ print("INSERT INTO Course_Types (type_id, type_name) VALUES (1, 'AP');")
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');")
 print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');")
 num_courses = 0
-
 inserted_departments = set()
 print(f"INSERT INTO Assignment_Type (assignment_type_name) VALUES ('Minor');")
 print(f"INSERT INTO Assignment_Type (assignment_type_name) VALUES ('Major');")
@@ -138,8 +137,6 @@ departments = parse_departments(file_path)
 sql_output, teacher_list = generate_sql_insert(departments)
 teachersize = len(teacher_list)
 student_courses_periods = {}
-num_courses = 314
-
 for i in range(1, 5001):
     print(f"INSERT INTO Students (student_id, name) VALUES ({i}, 'Student{i}');")
     listOfRandCoursePeriod = []
@@ -147,8 +144,6 @@ for i in range(1, 5001):
 
     for j in range(1, 11):  # Each student gets enrolled in up to 10 unique courses
         randCoursePeriod = random.randint(1, num_courses)  # Random course_period_id
-
-        # Ensure course_period_id maps to a unique course for the student
         while randCoursePeriod in listOfRandCoursePeriod or randCoursePeriod % num_courses in enrolled_courses:
             randCoursePeriod = random.randint(1, num_courses)
 
@@ -221,15 +216,10 @@ for student_id, course_ids in students_to_courses.items():
 
 # Print the assignments for each student
 for student_id, assignments in students_to_assignments.items():
-    print(f"Student ID: {student_id}, Assignments: {assignments}")
-
-for student_id, courses in students_to_courses.items():
-    if ((len(set(courses))) == 7):
-        print(str(student_id) + " " + str(courses))
+        for assignment_id in assignments:
+            grade = random.randint(75, 100)
+            print(f"INSERT INTO Assignment_grade (assignment_id, student_id, grade) VALUES ({assignment_id}, {student_id}, '{grade}')")
 
 
 
-for i in range(1, 5001):
-
-    random_number = secrets.randbelow(26) + 75
 
