@@ -1,18 +1,23 @@
 #!/usr/bin/python3
 import random
 import secrets
+import sys
+
+#Create a file
+with open("insert.sql", "w") as f:
+        pass
 
 #Drop tables
-print("DROP TABLE Courses")
-print("DROP TABLE Students")
-print("DROP TABLE Rosters")
-print("DROP TABLE Course_period")
-print("DROP TABLE Assignments")
-print("DROP TABLE Assignment_Type")
-print("DROP TABLE Teachers")
-print("DROP TABLE Departments")
-print("DROP TABLE Assignment_grade")
-print("DROP TABLE Course_Types")
+#print("DROP TABLE IF EXISTS Courses;")
+#print("DROP TABLE IF EXISTS Students;")
+#print("DROP TABLE IF EXISTS Rosters;")
+#print("DROP TABLE IF EXISTS Course_period;")
+#print("DROP TABLE IF EXISTS Assignments;")
+#print("DROP TABLE IF EXISTS Assignment_Type;")
+#print("DROP TABLE IF EXISTS Teachers;")
+#print("DROP TABLE IF EXISTS Departments;")
+#print("DROP TABLE IF EXISTS Assignment_grade;")
+#print("DROP TABLE IF EXISTS Course_Types;")
 
 #Create tables
 print("CREATE TABLE Courses (course_id integer PRIMARY KEY, course_name varchar(255), department_id integer);")
@@ -29,7 +34,7 @@ print("CREATE TABLE Assignments (assignment_id integer PRIMARY KEY, name varchar
 #FOREIGN KEY (course_id) REFERENCES Course_period(course_period_id)
 #FOREIGN KEY (assignment_type) REFERENCES Assignment_Type (assignment_type_name)
 
-print("CREATE TABLE Assignment_Type (assignment_type_name varchar(255), assignment_type_id integer PRIMARY KEY)")
+print("CREATE TABLE Assignment_Type (assignment_type_name varchar(255), assignment_type_id integer PRIMARY KEY);")
 print("CREATE TABLE Teachers (teacher_id integer PRIMARY KEY, name varchar(255), department_id integer);")
 #FOREIGN KEY (department_id) REFERENCES Departments(department_id));")
 print("CREATE TABLE Departments (department_id integer PRIMARY KEY, name varchar(255));")
@@ -40,7 +45,7 @@ print("CREATE TABLE Assignment_grade (assignment_id integer, student_id integer,
 print("CREATE TABLE Course_Types (type_id integer PRIMARY KEY, type_name varchar(255));")
 #FOREIGN KEY (type_id) REFERENCES Courses(course_id));")
 
-# Function to parse departments from file and avoid duplicates
+# Function to parse departments from file and avoid duplicates\
 def parse_departments_from_file(file_path):
     departments = {}
     current_department = None
@@ -124,7 +129,7 @@ def generate_sql():
         department_id += 1
 
     total_courses = course_id - 1
-    print(f"Total courses generated: {total_courses}")
+    print()
 
     # Step 2: Teachers
     teachers_dict = parse_teachers('teachers.txt')
@@ -137,15 +142,15 @@ def generate_sql():
                     department_to_teachers[dep_id].append(teacher_id)
                     teacher_id += 1
             else:
-                print(f"Warning: Numeric ID '{dept_numeric_id}' from teachers.txt does not match any department ID")
+                print()
         except ValueError:
-            print(f"Warning: Invalid numeric ID '{dept_numeric_id}' in teachers.txt")
+            print()
 
     # Check for departments without teachers
     for dep_id, teachers in department_to_teachers.items():
         if not teachers:
             dep_name = [name for name, id_ in department_name_to_id.items() if id_ == dep_id][0]
-            print(f"Warning: No teachers assigned to department '{dep_name}' (ID: {dep_id})")
+            print()
 
     # Step 3: Rooms
     all_rooms = generate_rooms()
@@ -155,7 +160,7 @@ def generate_sql():
     for c_id in range(1, total_courses + 1):
         department_id = course_to_department[c_id]
         if not department_to_teachers[department_id]:
-            print(f"Skipping course ID {c_id} in department ID {department_id} due to no teachers")
+            print()
             continue
         num_offerings = min(periods_per_course, 5)
         periods_used = set()
@@ -186,11 +191,11 @@ def generate_sql():
             course_period_to_course[course_period_id] = c_id
             course_period_id += 1
         else:
-            print(f"Warning: Could not generate fallback course period for period {period} due to no teachers")
+            print()
 
     print(f"Total course periods generated: {course_period_id - 1}")
     for period in range(1, TOTAL_PERIODS + 1):
-        print(f"Period {period} has {len(period_to_course_periods[period])} course periods")
+        print()
 
     # Step 5: Students
     for s_id in range(1, TOTAL_STUDENTS + 1):
@@ -214,7 +219,7 @@ def generate_sql():
                     course_period_to_course[course_period_id] = c_id
                     course_period_id += 1
                 else:
-                    print(f"Error: Cannot create additional course period for period {period} due to no teachers")
+                    print()
                     continue
 
             cp_id = None
@@ -223,7 +228,7 @@ def generate_sql():
                     cp_id = candidate_cp
                     break
             if cp_id is None:
-                print(f"Error: No available course period with space for period {period}")
+                print()
                 break
 
             print(f"INSERT INTO Rosters (course_period_id, student_id) VALUES ({cp_id}, {student_id});")
@@ -234,7 +239,7 @@ def generate_sql():
     # Verify roster assignments
     for cp_id, students in course_period_to_students.items():
         if len(students) != STUDENTS_PER_COURSE_PERIOD:
-            print(f"Warning: Course period {cp_id} has {len(students)} students instead of {STUDENTS_PER_COURSE_PERIOD}")
+            print()
 
     # Step 7: Assignments (One set per course_id)
     for c_id in range(1, total_courses + 1):
@@ -256,7 +261,7 @@ def generate_sql():
             for a_id in course_to_assignments[c_id]:
                 grade = random.randint(75, 100)
                 print(f"INSERT INTO Assignment_grade (assignment_id, student_id, grade) VALUES ({a_id}, {student_id}, '{grade}');")
-
+sys.stdout = open("insert.sql", "w")
 # Execute the script
 if __name__ == "__main__":
     generate_sql()
