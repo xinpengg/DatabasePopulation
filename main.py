@@ -1,6 +1,46 @@
+#!/usr/bin/python3
 import random
+import secrets
 
-# Parse departments and courses from 'departments.txt'
+#Drop tables
+print("DROP TABLE Courses")
+print("DROP TABLE Students")
+print("DROP TABLE Rosters")
+print("DROP TABLE Course_period")
+print("DROP TABLE Assignments")
+print("DROP TABLE Assignment_Type")
+print("DROP TABLE Teachers")
+print("DROP TABLE Departments")
+print("DROP TABLE Assignment_grade")
+print("DROP TABLE Course_Types")
+
+#Create tables
+print("CREATE TABLE Courses (course_id integer PRIMARY KEY, course_name varchar(255), department_id integer);")
+#FOREIGN KEY (department_id) REFERENCES Departments(department_id));
+print("CREATE TABLE Students (student_id integer PRIMARY KEY, name varchar(255));")
+print("CREATE TABLE Rosters (course_period_id integer, student_id integer);")
+#FOREIGN KEY (course_period_id) REFERENCES Course_period(course_period_id), FOREIGN KEY (student_id) REFERENCES Students(student_id));")
+print("CREATE TABLE Course_period (course_period_id integer PRIMARY KEY, period integer, room varchar(255), teacher_id integer, course_id integer);")
+#FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id),
+#FOREIGN KEY (course_id) REFERENCES Courses(course_id));")
+print("CREATE TABLE Assignments (assignment_id integer PRIMARY KEY, name varchar(255), assignment_type varchar(255), course_id integer);")
+
+#FOREIGN KEY (course_id) REFERENCES Course_period(course_period_id) course_id integer,
+#FOREIGN KEY (course_id) REFERENCES Course_period(course_period_id)
+#FOREIGN KEY (assignment_type) REFERENCES Assignment_Type (assignment_type_name)
+
+print("CREATE TABLE Assignment_Type (assignment_type_name varchar(255), assignment_type_id integer PRIMARY KEY)")
+print("CREATE TABLE Teachers (teacher_id integer PRIMARY KEY, name varchar(255), department_id integer);")
+#FOREIGN KEY (department_id) REFERENCES Departments(department_id));")
+print("CREATE TABLE Departments (department_id integer PRIMARY KEY, name varchar(255));")
+print("CREATE TABLE Assignment_grade (assignment_id integer, student_id integer,grade varchar(255));")
+
+#FOREIGN KEY (student_id) REFERENCES Students(student_id),
+#FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id)
+print("CREATE TABLE Course_Types (type_id integer PRIMARY KEY, type_name varchar(255));")
+#FOREIGN KEY (type_id) REFERENCES Courses(course_id));")
+
+# Function to parse departments from file and avoid duplicates
 def parse_departments_from_file(file_path):
     departments = {}
     current_department = None
