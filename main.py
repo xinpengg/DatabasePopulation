@@ -8,16 +8,16 @@ with open("insert.sql", "w") as f:
         pass
 
 #Drop tables
-#print("DROP TABLE IF EXISTS Courses;")
-#print("DROP TABLE IF EXISTS Students;")
-#print("DROP TABLE IF EXISTS Rosters;")
-#print("DROP TABLE IF EXISTS Course_period;")
-#print("DROP TABLE IF EXISTS Assignments;")
-#print("DROP TABLE IF EXISTS Assignment_Type;")
-#print("DROP TABLE IF EXISTS Teachers;")
-#print("DROP TABLE IF EXISTS Departments;")
-#print("DROP TABLE IF EXISTS Assignment_grade;")
-#print("DROP TABLE IF EXISTS Course_Types;")
+print("DROP TABLE IF EXISTS Courses;")
+print("DROP TABLE IF EXISTS Students;")
+print("DROP TABLE IF EXISTS Rosters;")
+print("DROP TABLE IF EXISTS Course_period;")
+print("DROP TABLE IF EXISTS Assignments;")
+print("DROP TABLE IF EXISTS Assignment_Type;")
+print("DROP TABLE IF EXISTS Teachers;")
+print("DROP TABLE IF EXISTS Departments;")
+print("DROP TABLE IF EXISTS Assignment_grade;")
+print("DROP TABLE IF EXISTS Course_Types;")
 
     print("""
 CREATE TABLE Course_Types (
