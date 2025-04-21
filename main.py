@@ -1,12 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import random
 import secrets
 import sys
-
-#Create a file
 with open("insert.sql", "w") as f:
         pass
-
 #Drop tables
 print("DROP TABLE IF EXISTS Courses;")
 print("DROP TABLE IF EXISTS Students;")
@@ -19,24 +16,24 @@ print("DROP TABLE IF EXISTS Departments;")
 print("DROP TABLE IF EXISTS Assignment_grade;")
 print("DROP TABLE IF EXISTS Course_Types;")
 
-    print("""
+print("""
 CREATE TABLE Course_Types (
     type_id INT PRIMARY KEY,
     type_name VARCHAR(50) NOT NULL
 );
 """)
-    print("""
+print("""
 CREATE TABLE Assignment_Type (
     assignment_type_id INT PRIMARY KEY,
     assignment_type_name VARCHAR(50) NOT NULL);
 """)
-    print("""
+print("""
 CREATE TABLE Departments (
     department_id INT PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
 """)
-    print("""
+print("""
 CREATE TABLE Courses (
     course_id INT PRIMARY KEY,
     department_id INT NOT NULL,
@@ -46,7 +43,7 @@ CREATE TABLE Courses (
     FOREIGN KEY (type_id) REFERENCES Course_Types(type_id)
 );
 """)
-    print("""
+print("""
 CREATE TABLE Teachers (
     teacher_id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -54,7 +51,7 @@ CREATE TABLE Teachers (
     FOREIGN KEY (department_id) REFERENCES Departments(department_id)
 );
 """)
-    print("""
+print("""
 CREATE TABLE Course_period (
     course_period_id INT PRIMARY KEY,
     period INT NOT NULL,
@@ -65,13 +62,13 @@ CREATE TABLE Course_period (
     FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
 """)
-    print("""
+print("""
 CREATE TABLE Students (
     student_id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 """)
-    print("""
+print("""
 CREATE TABLE Rosters (
     course_period_id INT NOT NULL,
     student_id INT NOT NULL,
@@ -80,7 +77,7 @@ CREATE TABLE Rosters (
     FOREIGN KEY (student_id) REFERENCES Students(student_id)
 );
 """)
-    print("""
+print("""
 CREATE TABLE Assignments (
     assignment_id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -90,7 +87,7 @@ CREATE TABLE Assignments (
     FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
 """)
-    print("""
+print("""
 CREATE TABLE Assignment_grade (
     assignment_id INT NOT NULL,
     student_id INT NOT NULL,
@@ -100,6 +97,7 @@ CREATE TABLE Assignment_grade (
     FOREIGN KEY (student_id) REFERENCES Students(student_id)
 );
 """)
+
 
 # Function to parse departments from file and avoid duplicates\
 def parse_departments_from_file(file_path):
