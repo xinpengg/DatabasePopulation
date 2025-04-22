@@ -42,16 +42,15 @@ def generate_rooms():
 
 # Main function to generate SQL inserts
 def generate_sql():
-    # Drop tables
-    print("DROP TABLE IF EXISTS Courses;")
-    print("DROP TABLE IF EXISTS Students;")
+    print("DROP TABLE IF EXISTS Assignment_grade;")
+    print("DROP TABLE IF EXISTS Assignments;")
     print("DROP TABLE IF EXISTS Rosters;")
     print("DROP TABLE IF EXISTS Course_period;")
-    print("DROP TABLE IF EXISTS Assignments;")
-    print("DROP TABLE IF EXISTS Assignment_Type;")
+    print("DROP TABLE IF EXISTS Students;")
     print("DROP TABLE IF EXISTS Teachers;")
+    print("DROP TABLE IF EXISTS Courses;")
     print("DROP TABLE IF EXISTS Departments;")
-    print("DROP TABLE IF EXISTS Assignment_grade;")
+    print("DROP TABLE IF EXISTS Assignment_Type;")
     print("DROP TABLE IF EXISTS Course_Types;")
 
     # Create tables
@@ -108,7 +107,36 @@ def generate_sql():
         name VARCHAR(255) NOT NULL
     );
     """)
-    print
+    print("""
+    CREATE TABLE Rosters (
+        course_period_id INT NOT NULL,
+        student_id INT NOT NULL,
+        PRIMARY KEY (course_period_id, student_id),
+        FOREIGN KEY (course_period_id) REFERENCES Course_period(course_period_id),
+        FOREIGN KEY (student_id) REFERENCES Students(student_id)
+    );
+    """)
+    print("""
+    CREATE TABLE Assignments (
+        assignment_id INT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        assignment_type INT NOT NULL,
+        course_id INT NOT NULL,
+        FOREIGN KEY (assignment_type) REFERENCES Assignment_Type(assignment_type_id),
+        FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+    );
+    """)
+    print("""
+    CREATE TABLE Assignment_grade (
+        assignment_id INT NOT NULL,
+        student_id INT NOT NULL,
+        grade VARCHAR(5) NOT NULL,
+        PRIMARY KEY (assignment_id, student_id),
+        FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id),
+        FOREIGN KEY (student_id) REFERENCES Students(student_id)
+    );
+    """)
+
 
 
     # Initialize ID counters
