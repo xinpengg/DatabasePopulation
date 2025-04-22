@@ -281,15 +281,18 @@ def generate_sql():
         for i in range(1, 4):  # 3 major
             print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) VALUES ({assignment_id}, 'Major Assignment {i}', 2, {c_id});")
             course_to_assignments[c_id].append(assignment_id)
-            assignment_id += 1
-
-    # Step 8: Grades (Based on course_id via course_period_id)
+            assignment_id += 1 
+    inserted_pairs = set()
     for cp_id, students in course_period_to_students.items():
         c_id = course_period_to_course[cp_id]
-        for student_id in students:
-            for a_id in course_to_assignments[c_id]:
+    for student_id in students:
+        for a_id in course_to_assignments[c_id]:
+            pair = (a_id, student_id)
+            # Only print insertion if this pair hasn't been printed yet.
+            if pair not in inserted_pairs:
                 grade = random.randint(75, 100)
                 print(f"INSERT INTO Assignment_grade (assignment_id, student_id, grade) VALUES ({a_id}, {student_id}, '{grade}');")
+                inserted_pairs.add(pair)
 sys.stdout = open("insert.sql", "w")
 # Execute the script
 if __name__ == "__main__":
