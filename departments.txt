@@ -73,7 +73,7 @@ Department:English
 12th Grade: Mystery, Horror & the Supernatural
 12th Grade: Science Fiction & Fantasy
 12th Grade: Yearbook
-The Survey (Tech's Student Newspaper)
+The Survey (BTech Student Newspaper)
 Department:SOCIAL STUDIES
 9th Grade Global
 10th Grade Regents Global History
