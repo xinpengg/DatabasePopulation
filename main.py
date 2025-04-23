@@ -315,11 +315,12 @@ def generate_sql():
         c_id = course_period_to_course[cp_id]
     for student_id in students:
         for a_id in course_to_assignments[c_id]:
-            pair = (a_id, student_id)
-            # Only print insertion if this pair hasn't been printed yet.
-            if pair not in inserted_pairs:
+            if c_id not in course_to_assignments:
+                continue
+        for student_id in students:
+            for a_id in course_to_assignments[c_id]:
                 grade = random.randint(75, 100)
-                print(f"INSERT INTO Assignment_grade (assignment_id, student_id, grade) VALUES ({a_id}, {student_id}, '{grade}');")
+                print(f"INSERT IGNORE INTO Assignment_grade (assignment_id, student_id, grade) VALUES ({a_id}, {student_id}, '{grade}');")
                 inserted_pairs.add(pair)
 sys.stdout = open("insert.sql", "w")
 # Execute the script
