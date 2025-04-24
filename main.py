@@ -29,7 +29,7 @@ def parse_teachers(file_path):
                 parts = line.split(':', 1)
                 if len(parts) == 2:
                     dept_id = parts[0].strip()  # Numeric ID (e.g., "1", "2")
-                    teacher_list = [teacher.strip() for teacher in parts[1].spli                                                                                                                                                             t(',')]
+                    teacher_list = [teacher.strip() for teacher in parts[1].split(',')]
                     teachers[dept_id] = teacher_list
     return teachers
 
@@ -38,7 +38,7 @@ def generate_rooms():
     floors = ['B', '1', '2', '3', '4', '5', '6', '7', '8']
     wings = ['N', 'S', 'E', 'W']
     room_numbers = range(1, 21)
-    return [f"{floor}{wing}{room_number:02}" for floor in floors for wing in win                                                                                                                                                             gs for room_number in room_numbers]
+    return [f"{floor}{wing}{room_number:02}" for floor in floors for wing in wings for room_number in room_numbers]
 
 # Main function to generate SQL inserts
 def generate_sql():
@@ -112,7 +112,7 @@ def generate_sql():
         course_period_id INT NOT NULL,
         student_id INT NOT NULL,
         PRIMARY KEY (course_period_id, student_id),
-        FOREIGN KEY (course_period_id) REFERENCES Course_period(course_period_id                                                                                                                                                             ),
+        FOREIGN KEY (course_period_id) REFERENCES Course_period(course_period_id),
         FOREIGN KEY (student_id) REFERENCES Students(student_id)
     );
     """)
@@ -122,7 +122,7 @@ def generate_sql():
         name VARCHAR(255) NOT NULL,
         assignment_type INT NOT NULL,
         course_id INT NOT NULL,
-        FOREIGN KEY (assignment_type) REFERENCES Assignment_Type(assignment_type                                                                                                                                                             _id),
+        FOREIGN KEY (assignment_type) REFERENCES Assignment_Type(assignment_type_id),
         FOREIGN KEY (course_id) REFERENCES Courses(course_id)
     );
     """)
@@ -149,7 +149,7 @@ def generate_sql():
     TOTAL_STUDENTS = 5000
     TOTAL_PERIODS = 10
     TOTAL_ASSIGNMENTS = TOTAL_STUDENTS * TOTAL_PERIODS
-    MIN_COURSE_PERIODS = (TOTAL_ASSIGNMENTS + STUDENTS_PER_COURSE_PERIOD - 1) //                                                                                                                                                              STUDENTS_PER_COURSE_PERIOD
+    MIN_COURSE_PERIODS = (TOTAL_ASSIGNMENTS + STUDENTS_PER_COURSE_PERIOD - 1) // STUDENTS_PER_COURSE_PERIOD
 
     # Data structures
     department_name_to_id = {}
@@ -162,12 +162,12 @@ def generate_sql():
 
     # Insert Course_Types
     print("INSERT INTO Course_Types (type_id, type_name) VALUES (1, 'AP');")
-    print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');"                                                                                                                                                             )
-    print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');                                                                                                                                                             ")
+    print("INSERT INTO Course_Types (type_id, type_name) VALUES (2, 'Regents');")
+    print("INSERT INTO Course_Types (type_id, type_name) VALUES (3, 'Elective');")
 
     # Insert Assignment_Type
-    print("INSERT INTO Assignment_Type (assignment_type_id, assignment_type_name                                                                                                                                                             ) VALUES (1, 'Minor');")
-    print("INSERT INTO Assignment_Type (assignment_type_id, assignment_type_name                                                                                                                                                             ) VALUES (2, 'Major');")
+    print("INSERT INTO Assignment_Type (assignment_type_id, assignment_type_name) VALUES (1, 'Minor');")
+    print("INSERT INTO Assignment_Type (assignment_type_id, assignment_type_name) VALUES (2, 'Major');")
 
     # Step 1: Departments and Courses
     departments_courses = parse_departments_from_file('departments.txt')
@@ -175,12 +175,12 @@ def generate_sql():
     for department, courses in departments_courses.items():
         department_name_to_id[department] = department_id
         department_to_teachers[department_id] = []
-        print(f"INSERT INTO Departments (department_id, name) VALUES ({departmen                                                                                                                                                             t_id}, '{department}');")
+        print(f"INSERT INTO Departments (department_id, name) VALUES ({department_id}, '{department}');")
         for course in courses:
             type_id = 1 if "AP" in course else 2 if "Regents" in course else 3
-            print(f"INSERT INTO Courses (course_id, department_id, course_name,                                                                                                                                                              type_id) VALUES ({course_id}, {department_id}, '{course}', {type_id});")
+            print(f"INSERT INTO Courses (course_id, department_id, course_name, type_id) VALUES ({course_id}, {department_id}, '{course}', {type_id});")
             course_to_department[course_id] = department_id
-            course_to_assignments[course_id] = []  # Initialize assignment list                                                                                                                                                              for this course
+            course_to_assignments[course_id] = []  # Initialize assignment list for this course
             course_id += 1
         department_id += 1
 
@@ -194,7 +194,7 @@ def generate_sql():
             dep_id = int(dept_numeric_id)
             if dep_id in department_to_teachers:
                 for teacher in teachers:
-                    print(f"INSERT INTO Teachers (teacher_id, name, department_i                                                                                                                                                             d) VALUES ({teacher_id}, '{teacher}', {dep_id});")
+                    print(f"INSERT INTO Teachers (teacher_id, name, department_id) VALUES ({teacher_id}, '{teacher}', {dep_id});")
                     department_to_teachers[dep_id].append(teacher_id)
                     teacher_id += 1
             else:
@@ -205,7 +205,7 @@ def generate_sql():
     # Check for departments without teachers
     for dep_id, teachers in department_to_teachers.items():
         if not teachers:
-            dep_name = [name for name, id_ in department_name_to_id.items() if i                                                                                                                                                             d_ == dep_id][0]
+            dep_name = [name for name, id_ in department_name_to_id.items() if id_ == dep_id][0]
             print()
 
     # Step 3: Rooms
@@ -227,10 +227,10 @@ def generate_sql():
             periods_used.add(period)
             room = random.choice(all_rooms)
             teacher_id = random.choice(department_to_teachers[department_id])
-            print(f"INSERT INTO Course_period (course_period_id, period, room, t                                                                                                                                                             eacher_id, course_id) VALUES ({course_period_id}, {period}, '{room}', {teacher_i                                                                                                                                                             d}, {c_id});")
+            print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) VALUES ({course_period_id}, {period}, '{room}', {teacher_id}, {c_id});")
             period_to_course_periods[period].append(course_period_id)
             course_period_to_students[course_period_id] = []
-            course_period_to_course[course_period_id] = c_id  # Map period to co                                                                                                                                                             urse
+            course_period_to_course[course_period_id] = c_id  # Map period to course
             course_period_id += 1
 
     # Ensure minimum course periods
@@ -241,7 +241,7 @@ def generate_sql():
             period = random.randint(1, TOTAL_PERIODS)
             room = random.choice(all_rooms)
             teacher_id = random.choice(department_to_teachers[department_id])
-            print(f"INSERT INTO Course_period (course_period_id, period, room, t                                                                                                                                                             eacher_id, course_id) VALUES ({course_period_id}, {period}, '{room}', {teacher_i                                                                                                                                                             d}, {c_id});")
+            print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) VALUES ({course_period_id}, {period}, '{room}', {teacher_id}, {c_id});")
             period_to_course_periods[period].append(course_period_id)
             course_period_to_students[course_period_id] = []
             course_period_to_course[course_period_id] = c_id
@@ -255,7 +255,7 @@ def generate_sql():
 
     # Step 5: Students
     for s_id in range(1, TOTAL_STUDENTS + 1):
-        print(f"INSERT INTO Students (student_id, name) VALUES ({s_id}, 'Student                                                                                                                                                             {s_id}');")
+        print(f"INSERT INTO Students (student_id, name) VALUES ({s_id}, 'Student{s_id}');")
 
     # Step 6: Rosters
     student_ids = list(range(1, TOTAL_STUDENTS + 1))
@@ -268,8 +268,8 @@ def generate_sql():
                 department_id = course_to_department[c_id]
                 if department_to_teachers[department_id]:
                     room = random.choice(all_rooms)
-                    teacher_id = random.choice(department_to_teachers[department                                                                                                                                                             _id])
-                    print(f"INSERT INTO Course_period (course_period_id, period,                                                                                                                                                              room, teacher_id, course_id) VALUES ({course_period_id}, {period}, '{room}', {t                                                                                                                                                             eacher_id}, {c_id});")
+                    teacher_id = random.choice(department_to_teachers[department_id])
+                    print(f"INSERT INTO Course_period (course_period_id, period, room, teacher_id, course_id) VALUES ({course_period_id}, {period}, '{room}', {teacher_id}, {c_id});")
                     available_course_periods.append(course_period_id)
                     course_period_to_students[course_period_id] = []
                     course_period_to_course[course_period_id] = c_id
@@ -280,16 +280,16 @@ def generate_sql():
 
             cp_id = None
             for candidate_cp in available_course_periods:
-                if len(course_period_to_students[candidate_cp]) < STUDENTS_PER_C                                                                                                                                                             OURSE_PERIOD:
+                if len(course_period_to_students[candidate_cp]) < STUDENTS_PER_COURSE_PERIOD:
                     cp_id = candidate_cp
                     break
             if cp_id is None:
                 print()
                 break
 
-            print(f"INSERT INTO Rosters (course_period_id, student_id) VALUES ({                                                                                                                                                             cp_id}, {student_id});")
+            print(f"INSERT INTO Rosters (course_period_id, student_id) VALUES ({cp_id}, {student_id});")
             course_period_to_students[cp_id].append(student_id)
-            if len(course_period_to_students[cp_id]) == STUDENTS_PER_COURSE_PERI                                                                                                                                                             OD:
+            if len(course_period_to_students[cp_id]) == STUDENTS_PER_COURSE_PERIOD:
                 available_course_periods.remove(cp_id)
 
     # Verify roster assignments
@@ -299,14 +299,14 @@ def generate_sql():
 
     # Step 7: Assignments (One set per course_id)
     for c_id in range(1, total_courses + 1):
-        if c_id not in course_to_department or not department_to_teachers[course                                                                                                                                                             _to_department[c_id]]:
+        if c_id not in course_to_department or not department_to_teachers[course_to_department[c_id]]:
             continue  # Skip courses with no teachers
         for i in range(1, 13):  # 12 minor
-            print(f"INSERT INTO Assignments (assignment_id, name, assignment_typ                                                                                                                                                             e, course_id) VALUES ({assignment_id}, 'Minor Assignment {i}', 1, {c_id});")
+            print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) VALUES ({assignment_id}, 'Minor Assignment {i}', 1, {c_id});")
             course_to_assignments[c_id].append(assignment_id)
             assignment_id += 1
         for i in range(1, 4):  # 3 major
-            print(f"INSERT INTO Assignments (assignment_id, name, assignment_typ                                                                                                                                                             e, course_id) VALUES ({assignment_id}, 'Major Assignment {i}', 2, {c_id});")
+            print(f"INSERT INTO Assignments (assignment_id, name, assignment_type, course_id) VALUES ({assignment_id}, 'Major Assignment {i}', 2, {c_id});")
             course_to_assignments[c_id].append(assignment_id)
             assignment_id += 1
 
@@ -317,7 +317,7 @@ def generate_sql():
         for student_id in students:
             for a_id in course_to_assignments[c_id]:
                 grade = random.randint(75, 100)
-                print(f"INSERT INTO Assignment_grade (assignment_id, student_id,                                                                                                                                                              grade) VALUES ({a_id}, {student_id}, '{grade}');")
+                print(f"INSERT INTO Assignment_grade (assignment_id, student_id, grade) VALUES ({a_id}, {student_id}, '{grade}');")
 sys.stdout = open("insert.sql", "w")
 # Execute the script
 if __name__ == "__main__":
